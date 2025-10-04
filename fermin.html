@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Página fácil para Fermín</title>
+  <style>
+    :root{
+      --accent: #2b8cff;
+      --accent-2: #ff8c42;
+      --bg: #f6fbff;
+      --card: #ffffff;
+    }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,var(--bg),#eaf3ff);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+      padding:20px;
+    }
+    .card{
+      width:900px;
+      max-width:100%;
+      background:var(--card);
+      border-radius:16px;
+      box-shadow:0 8px 30px rgba(20,40,80,0.08);
+      padding:24px;
+      display:grid;
+      gap:14px;
+    }
+    h1{margin:0;font-size:28px;color:#0b3b66;}
+    p{margin:0;color:#244a6e;}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;}
+    button{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:600}
+    .btn-blue{background:var(--accent);color:white}
+    .btn-orange{background:var(--accent-2);color:white}
+    input[type="text"]{padding:10px;border-radius:8px;border:1px solid #d6e6ff;min-width:180px}
+    .row{display:flex;gap:12px;align-items:center}
+    #greeting{font-size:18px;padding:10px;border-radius:8px;background:#f0f7ff;border:1px dashed #d2e9ff}
+    #clicker{font-size:22px}
+    canvas{background:#fff3; border-radius:10px; width:100%; height:150px}
+    footer{font-size:13px;color:#567; margin-top:6px}
+    .fun-area{display:flex;gap:12px;align-items:center}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <h1>Hola Fermín 👋</h1>
+        <p>Esta es una página muy simple para mostrar que crear una web es fácil y divertida.</p>
+      </div>
+      <div style="text-align:right">
+        <div style="font-weight:700;color:#0b3b66">Proyecto: Mi Primera Web</div>
+        <div style="font-size:12px;color:#6b879e">Guarda como <code>fermin.html</code> y abrí con doble clic</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <input id="nameInput" type="text" placeholder="Escribí tu nombre (por ej. Fermín)" />
+      <button class="btn-blue" id="sayHiBtn">Saludar</button>
+      <button class="btn-orange" id="bgBtn">Cambiar fondo</button>
+    </div>
+
+    <div id="greeting">Pulsa "Saludar" para ver un mensaje personalizado :)</div>
+
+    <div class="fun-area">
+      <div>
+        <div style="font-weight:700;margin-bottom:6px">Contador: toca la tortuga 🐢</div>
+        <div id="clicker">
+          <button id="turtleBtn" style="font-size:18px;padding:10px 14px;border-radius:12px">🐢 Toca acá</button>
+          <span id="count">0</span> veces
+        </div>
+      </div>
+
+      <div style="flex:1">
+        <div style="font-weight:700;margin-bottom:6px">Dibujo en canvas</div>
+        <canvas id="drawing" width="800" height="150"></canvas>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:center;">
+      <button id="surprise" class="btn-blue">Sorpresa 🎉</button>
+      <div id="surpriseText" style="font-weight:600;color:#0b3b66"></div>
+    </div>
+
+    <footer>
+      Tips: podés editar el archivo con el Bloc de notas o Visual Studio Code. Si querés ver la página desde otros dispositivos, podés abrir una terminal y ejecutar <code>python -m http.server</code> en la carpeta (opcional).
+    </footer>
+  </div>
+
+  <script>
+    // Saludo personalizado
+    const nameInput = document.getElementById('nameInput');
+    const sayHiBtn = document.getElementById('sayHiBtn');
+    const greeting = document.getElementById('greeting');
+    sayHiBtn.addEventListener('click', () => {
+      const name = nameInput.value.trim() || 'Fermín';
+      const hora = new Date().getHours();
+      let parteDia = 'buenos días';
+      if(hora >= 12 && hora < 18) parteDia = 'buenas tardes';
+      if(hora >= 18) parteDia = 'buenas noches';
+      greeting.textContent = `¡${parteDia}, ${name}! 🥳 Bienvenido a tu primera página web.`;
+    });
+
+    // Cambiar fondo (toggle)
+    const bgBtn = document.getElementById('bgBtn');
+    let dark = false;
+    bgBtn.addEventListener('click', () => {
+      dark = !dark;
+      if(dark){
+        document.body.style.background = 'linear-gradient(180deg,#ffeedd,#ffd7c4)';
+      } else {
+        document.body.style.background = 'linear-gradient(180deg,var(--bg),#eaf3ff)';
+      }
+    });
+
+    // Clicker tortuga
+    const turtleBtn = document.getElementById('turtleBtn');
+    const countSpan = document.getElementById('count');
+    let clicks = 0;
+    turtleBtn.addEventListener('click', () => {
+      clicks++;
+      countSpan.textContent = clicks;
+      // efecto pequeño
+      turtleBtn.style.transform = 'scale(0.95)';
+      setTimeout(()=> turtleBtn.style.transform = '', 120);
+    });
+
+    // Canvas: dibuja una carita feliz
+    const canvas = document.getElementById('drawing');
+    const ctx = canvas.getContext('2d');
+    function drawSmiley(){
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0,0,w,h);
+      // fondo
+      ctx.fillStyle = '#ffffffaa';
+      ctx.fillRect(0,0,w,h);
+      // cara
+      const cx = 80, cy = h/2, r = 50;
+      ctx.beginPath();
+      ctx.arc(cx,cy,r,0,Math.PI*2);
+      ctx.fillStyle = '#fffbcc';
+      ctx.fill();
+      ctx.strokeStyle = '#f0c85a';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+      // ojos
+      ctx.beginPath();
+      ctx.arc(cx-18,cy-10,8,0,Math.PI*2);
+      ctx.arc(cx+18,cy-10,8,0,Math.PI*2);
+      ctx.fillStyle = '#333';
+      ctx.fill();
+      // sonrisa
+      ctx.beginPath();
+      ctx.arc(cx,cy+5,24,0,Math.PI);
+      ctx.strokeStyle = '#333';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // dibujitos al lado que cambian con clicks
+      ctx.font = '18px system-ui';
+      ctx.fillStyle = '#0b3b66';
+      ctx.fillText('¡Haz clic en la tortuga 🐢 ' + clicks + ' veces!', 160, cy+6);
+    }
+    drawSmiley();
+
+    // Redibujar cada vez que cambia el contador
+    const observer = new MutationObserver(drawSmiley);
+    observer.observe(countSpan, { childList: true });
+
+    // Botón sorpresa
+    const surprise = document.getElementById('surprise');
+    const surpriseText = document.getElementById('surpriseText');
+    const messages = [
+      '¡Sorpresa! 🎉 Sos increíble creando cosas.',
+      '¿Querés hacer tu propio jueguito la próxima vez?',
+      'Pista: podés cambiar texto y colores desde el archivo .html',
+      '¡Genial! Ahora mostrá esto a alguien más 😊'
+    ];
+    surprise.addEventListener('click', () => {
+      const idx = Math.floor(Math.random()*messages.length);
+      surpriseText.textContent = messages[idx];
+    });
+
+    // Pequeña animación: hacer que el saludo aparezca al iniciar
+    greeting.style.opacity = 0;
+    greeting.style.transition = 'opacity 700ms ease';
+    setTimeout(()=> greeting.style.opacity = 1, 300);
+
+  </script>
+</body>
+</html>
